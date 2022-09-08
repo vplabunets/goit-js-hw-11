@@ -4,6 +4,7 @@ import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import PicturesApiService from './PicturesApiService';
+// const axios = require('axios').default;
 let _ = require('lodash');
 const refs = {
   formEl: document.querySelector('#search-form'),
@@ -11,7 +12,7 @@ const refs = {
   galleryDivEl: document.querySelector('.gallery'),
   loadMoreBtn: document.querySelector('.load-more'),
 };
-
+let lightBox = null;
 // refs.inputEl.addEventListener('input', _.debounce(onInputType, DEBOUNCE_DELAY));
 refs.formEl.addEventListener('submit', onFormSubmit);
 refs.loadMoreBtn.addEventListener('click', onLoadMore);
@@ -33,17 +34,27 @@ function onFormSubmit(event) {
     return;
   } else {
     // console.log(event.target.elements);
+    // console.dir(event.target.elements);
+    // console.log(event.currentTarget.elements);
+    // console.dir(event.currentTarget.elements.searchQuery.value);
     // let inputData = event.currentTarget.elements.query.value;
     // fetchDataByInput(inputData)
     //   .then(renderGallery)
     //   .catch(error => console.log(error));
-    picturesApiService.inputData = refs.inputEl.value;
+    picturesApiService.inputData =
+      event.currentTarget.elements.searchQuery.value;
     picturesApiService.resetPage();
     picturesApiService
       .fetchPictures()
       .then(renderGallery)
       .catch(error => console.log(error));
     refs.loadMoreBtn.style.display = 'block';
+    lightBox = new SimpleLightbox('.gallery a', {
+      //Adding additional options
+      captionsData: 'alt',
+      captionPosition: 'bottom',
+      captionDelay: 250,
+    }).refresh();
   }
 }
 
@@ -52,6 +63,7 @@ function onLoadMore(event) {
     .fetchPictures()
     .then(renderGallery)
     .catch(error => console.log(error));
+  lightBox.refresh();
 }
 //Markup cleaning function
 function markupCleaning() {
@@ -60,17 +72,23 @@ function markupCleaning() {
 
 function renderGallery(userInputArray) {
   markupCreation(userInputArray);
+  const lightBox = new SimpleLightbox('.gallery a', {
+    //Adding additional options
+    captionsData: 'alt',
+    captionPosition: 'bottom',
+    captionDelay: 250,
+  });
 }
 
 function markupCreation(userInputArray) {
   //Checking for not empty array
   let makrup = '';
-  if (userInputArray.hits.length === 0) {
+  if (userInputArray.data.hits.length === 0) {
     return Notiflix.Notify.info(
       'Sorry, there are no images matching your search query.'
     );
   } else {
-    makrup = userInputArray.hits
+    makrup = userInputArray.data.hits
       .map(
         ({
           webformatURL,
@@ -106,12 +124,6 @@ function markupCreation(userInputArray) {
   refs.galleryDivEl.insertAdjacentHTML('beforeEnd', makrup);
 }
 
-const lightBox = new SimpleLightbox('.gallery a', {
-  //Adding additional options
-  captionsData: 'alt',
-  captionPosition: 'bottom',
-  captionDelay: 250,
-});
 // document.addEventListener('keydown', function (event) {
 //   // Escape pushing checking
 //   if (event.key === 'Escape') {
