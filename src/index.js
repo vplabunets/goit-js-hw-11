@@ -5,6 +5,9 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import PicturesApiService from './PicturesApiService';
 // const axios = require('axios').default;
+import { inputOptios } from './inputOptions';
+
+console.log(inputOptios().image_type);
 let _ = require('lodash');
 const refs = {
   formEl: document.querySelector('#search-form'),
@@ -33,14 +36,6 @@ function onFormSubmit(event) {
   if (refs.inputEl.value.length === 0) {
     return;
   } else {
-    // console.log(event.target.elements);
-    // console.dir(event.target.elements);
-    // console.log(event.currentTarget.elements);
-    // console.dir(event.currentTarget.elements.searchQuery.value);
-    // let inputData = event.currentTarget.elements.query.value;
-    // fetchDataByInput(inputData)
-    //   .then(renderGallery)
-    //   .catch(error => console.log(error));
     picturesApiService.inputData =
       event.currentTarget.elements.searchQuery.value;
     picturesApiService.resetPage();
@@ -72,7 +67,7 @@ function markupCleaning() {
 
 function renderGallery(userInputArray) {
   markupCreation(userInputArray);
-  const lightBox = new SimpleLightbox('.gallery a', {
+  lightBox = new SimpleLightbox('.gallery a', {
     //Adding additional options
     captionsData: 'alt',
     captionPosition: 'bottom',
