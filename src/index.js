@@ -5,19 +5,18 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import PicturesApiService from './PicturesApiService';
 // const axios = require('axios').default;
-import { inputOptios } from './inputOptions';
 
-console.log(inputOptios().image_type);
+import { inputOptions } from './inputOptions';
 let _ = require('lodash');
 const refs = {
-  formEl: document.querySelector('#search-form'),
+  // formEl: document.querySelector('#search-form'),
   inputEl: document.querySelector('form input'),
   galleryDivEl: document.querySelector('.gallery'),
   loadMoreBtn: document.querySelector('.load-more'),
 };
 let lightBox = null;
 // refs.inputEl.addEventListener('input', _.debounce(onInputType, DEBOUNCE_DELAY));
-refs.formEl.addEventListener('submit', onFormSubmit);
+inputOptions().formEl.addEventListener('submit', onFormSubmit);
 refs.loadMoreBtn.addEventListener('click', onLoadMore);
 // const options = {}
 
