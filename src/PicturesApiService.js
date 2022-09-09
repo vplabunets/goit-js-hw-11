@@ -6,7 +6,6 @@ export default class PicturesApiService {
   }
   async fetchPictures() {
     const axios = require('axios').default;
-    this.increasePage();
     const url = `${inputOptions().BASEURL}?key=${inputOptions().key}&q=${
       this.inputData
     }&image_type=photo&
@@ -16,11 +15,12 @@ export default class PicturesApiService {
     //   console.log(this);
     //   return inputValueObject.json();
     // });
+    this.increasePage();
     return await axios.get(url);
   }
   increasePage() {
     this.page += 1;
-    console.log(this.page);
+    // console.log(this.page);
   }
   resetPage() {
     this.page = 1;

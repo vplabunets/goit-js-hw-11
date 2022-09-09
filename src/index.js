@@ -14,7 +14,7 @@ const refs = {
   // loadMoreBtn: document.querySelector('.load-more'),
 };
 let lightBox = null;
-
+let totalPages = 0;
 inputOptions().formEl.addEventListener('submit', onFormSubmit);
 inputOptions().loadMoreBtn.addEventListener('click', onLoadMore);
 //
@@ -34,8 +34,9 @@ async function onFormSubmit(event) {
   console.log();
   //checking of empty string submitting and double space matching
   if (
-    inputOptions().inputEl.value.length === 0 ||
-    inputOptions().inputEl.value.search(/  {1,3}/) !== -1
+    // totalPages === 0
+    inputOptions().inputEl.value.length === 0
+    // ||    inputOptions().inputEl.value.search(/  {1,3}/) !== -1
   ) {
     //Input cleaning
     event.currentTarget.elements.searchQuery.value = '';
@@ -50,21 +51,34 @@ async function onFormSubmit(event) {
     try {
       const fetchedRequest = await picturesApiService.fetchPictures();
       renderGallery(fetchedRequest);
+      console.log(fetchedRequest);
+      totalPages = fetchedRequest.data.totalHits;
       //Hidden by default button displaying
-      inputOptions().loadMoreBtn.style.display = 'block';
+      if (totalPages !== 0) {
+        inputOptions().loadMoreBtn.style.display = 'block';
+        return Notiflix.Notify.info(
+          `${totalPages} images was found according to your querry.`
+        );
+      } else {
+        return Notiflix.Notify.info(
+          'Sorry, there are no images matching your search query.'
+        );
+      }
     } catch {
       error => console.log(error);
     }
   }
 }
 
-function onLoadMore(event) {
-  //
-  picturesApiService
-    .fetchPictures()
-    .then(renderGallery)
-    .catch(error => console.log(error));
-  // lightBoxLauncher();
+function onLoadMore() {
+  if (totalPages - picturesApiService.page * 40 < 0) {
+    return Notiflix.Notify.info('No more pictures available');
+  } else {
+    picturesApiService
+      .fetchPictures()
+      .then(renderGallery)
+      .catch(error => console.log(error));
+  }
 }
 //Markup cleaning function
 function markupCleaning() {
@@ -79,23 +93,23 @@ function renderGallery(userInputArray) {
 function markupCreation(userInputArray) {
   //Checking for not empty array
   let makrup = '';
-  if (userInputArray.data.hits.length === 0) {
-    return Notiflix.Notify.info(
-      'Sorry, there are no images matching your search query.'
-    );
-  } else {
-    makrup = userInputArray.data.hits
-      .map(
-        ({
-          webformatURL,
-          largeImageURL,
-          tags,
-          likes,
-          views,
-          comments,
-          downloads,
-        }) =>
-          ` <div class="photo-card">
+  // if (userInputArray.data.hits.length === 0) {
+  //   return Notiflix.Notify.info(
+  //     'Sorry, there are no images matching your search query.'
+  //   );
+  // } else {
+  makrup = userInputArray.data.hits
+    .map(
+      ({
+        webformatURL,
+        largeImageURL,
+        tags,
+        likes,
+        views,
+        comments,
+        downloads,
+      }) =>
+        ` <div class="photo-card">
         <a href="${largeImageURL}">
   <img src="${webformatURL}" alt="" loading="lazy" height ="200" width = "300"/></a>
   <div class="info">
@@ -113,9 +127,9 @@ function markupCreation(userInputArray) {
     </p>
   </div>
 </div>`
-      )
-      .join('');
-  }
+    )
+    .join('');
+  // }
   // console.log(makrup);
   inputOptions().galleryDivEl.insertAdjacentHTML('beforeEnd', makrup);
 }
