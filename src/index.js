@@ -46,8 +46,6 @@ function onFormSubmit(event) {
       .catch(error => console.log(error));
     //Hidden by default button displaying
     inputOptions().loadMoreBtn.style.display = 'block';
-    //SimpleLightbox gallery launching
-    lightBoxLauncher();
   }
 }
 
@@ -57,7 +55,7 @@ function onLoadMore(event) {
     .fetchPictures()
     .then(renderGallery)
     .catch(error => console.log(error));
-  lightBoxLauncher();
+  // lightBoxLauncher();
 }
 //Markup cleaning function
 function markupCleaning() {
@@ -66,6 +64,7 @@ function markupCleaning() {
 
 function renderGallery(userInputArray) {
   markupCreation(userInputArray);
+  lightBoxLauncher();
 }
 
 function markupCreation(userInputArray) {
