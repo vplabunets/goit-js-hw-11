@@ -3,21 +3,20 @@ import Notiflix from 'notiflix';
 // import fetchDataByInput from './fetchCountries';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+//import data from API server
 import PicturesApiService from './PicturesApiService';
-// const axios = require('axios').default;
-
 import { inputOptions } from './inputOptions';
 let _ = require('lodash');
 const refs = {
   // formEl: document.querySelector('#search-form'),
-  inputEl: document.querySelector('form input'),
-  galleryDivEl: document.querySelector('.gallery'),
-  loadMoreBtn: document.querySelector('.load-more'),
+  // inputEl: document.querySelector('form input'),
+  // galleryDivEl: document.querySelector('.gallery'),
+  // loadMoreBtn: document.querySelector('.load-more'),
 };
 let lightBox = null;
-// refs.inputEl.addEventListener('input', _.debounce(onInputType, DEBOUNCE_DELAY));
+
 inputOptions().formEl.addEventListener('submit', onFormSubmit);
-refs.loadMoreBtn.addEventListener('click', onLoadMore);
+inputOptions().loadMoreBtn.addEventListener('click', onLoadMore);
 // const options = {}
 
 // function fetchDataByInput(inputValue) {
@@ -32,7 +31,7 @@ function onFormSubmit(event) {
   event.preventDefault();
   markupCleaning();
   // let inputData = refs.inputEl.value;
-  if (refs.inputEl.value.length === 0) {
+  if (inputOptions().inputEl.value.length === 0) {
     return;
   } else {
     picturesApiService.inputData =
@@ -42,7 +41,7 @@ function onFormSubmit(event) {
       .fetchPictures()
       .then(renderGallery)
       .catch(error => console.log(error));
-    refs.loadMoreBtn.style.display = 'block';
+    inputOptions().loadMoreBtn.style.display = 'block';
     lightBox = new SimpleLightbox('.gallery a', {
       //Adding additional options
       captionsData: 'alt',
@@ -61,7 +60,7 @@ function onLoadMore(event) {
 }
 //Markup cleaning function
 function markupCleaning() {
-  refs.galleryDivEl.innerHTML = '';
+  inputOptions().galleryDivEl.innerHTML = '';
 }
 
 function renderGallery(userInputArray) {
@@ -115,7 +114,7 @@ function markupCreation(userInputArray) {
       .join('');
   }
   // console.log(makrup);
-  refs.galleryDivEl.insertAdjacentHTML('beforeEnd', makrup);
+  inputOptions().galleryDivEl.insertAdjacentHTML('beforeEnd', makrup);
 }
 
 // document.addEventListener('keydown', function (event) {
