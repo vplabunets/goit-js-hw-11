@@ -28,7 +28,7 @@ function lightBoxLauncher() {
 }
 
 const picturesApiService = new PicturesApiService();
-function onFormSubmit(event) {
+async function onFormSubmit(event) {
   event.preventDefault();
   markupCleaning();
   console.log();
@@ -47,12 +47,14 @@ function onFormSubmit(event) {
     picturesApiService.inputData =
       event.currentTarget.elements.searchQuery.value.trim();
     picturesApiService.resetPage();
-    picturesApiService
-      .fetchPictures()
-      .then(renderGallery)
-      .catch(error => console.log(error));
-    //Hidden by default button displaying
-    inputOptions().loadMoreBtn.style.display = 'block';
+    try {
+      const fetchedRequest = await picturesApiService.fetchPictures();
+      renderGallery(fetchedRequest);
+      //Hidden by default button displaying
+      inputOptions().loadMoreBtn.style.display = 'block';
+    } catch {
+      error => console.log(error);
+    }
   }
 }
 
