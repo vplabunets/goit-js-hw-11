@@ -17,22 +17,25 @@ let lightBox = null;
 
 inputOptions().formEl.addEventListener('submit', onFormSubmit);
 inputOptions().loadMoreBtn.addEventListener('click', onLoadMore);
-// const options = {}
+//
+function lightBoxLauncher() {
+  return (lightBox = new SimpleLightbox('.gallery a', {
+    //Adding additional options
+    captionsData: 'alt',
+    captionPosition: 'bottom',
+    captionDelay: 250,
+  }).refresh());
+}
 
-// function fetchDataByInput(inputValue) {
-//   let inputValuelink = `https://pixabay.com/api/?key=${KEY}&q=${inputValue}&image_type=photo&
-//   orientation=horizontal&safesearch=true&per_page=40&page=3`;
-//   return fetch(inputValuelink).then(inputValueObject => {
-//     return inputValueObject.json();
-//   });
-// }
 const picturesApiService = new PicturesApiService();
 function onFormSubmit(event) {
   event.preventDefault();
   markupCleaning();
-  // let inputData = refs.inputEl.value;
+  //checking of empty string submitting
   if (inputOptions().inputEl.value.length === 0) {
-    return;
+    return Notiflix.Notify.info(
+      'Sorry, there are no images matching your search query.'
+    );
   } else {
     picturesApiService.inputData =
       event.currentTarget.elements.searchQuery.value;
@@ -41,22 +44,20 @@ function onFormSubmit(event) {
       .fetchPictures()
       .then(renderGallery)
       .catch(error => console.log(error));
+    //Hidden by default button displaying
     inputOptions().loadMoreBtn.style.display = 'block';
-    lightBox = new SimpleLightbox('.gallery a', {
-      //Adding additional options
-      captionsData: 'alt',
-      captionPosition: 'bottom',
-      captionDelay: 250,
-    }).refresh();
+    //SimpleLightbox gallery launching
+    lightBoxLauncher();
   }
 }
 
 function onLoadMore(event) {
+  //
   picturesApiService
     .fetchPictures()
     .then(renderGallery)
     .catch(error => console.log(error));
-  lightBox.refresh();
+  lightBoxLauncher();
 }
 //Markup cleaning function
 function markupCleaning() {
@@ -65,12 +66,6 @@ function markupCleaning() {
 
 function renderGallery(userInputArray) {
   markupCreation(userInputArray);
-  lightBox = new SimpleLightbox('.gallery a', {
-    //Adding additional options
-    captionsData: 'alt',
-    captionPosition: 'bottom',
-    captionDelay: 250,
-  });
 }
 
 function markupCreation(userInputArray) {
