@@ -31,14 +31,21 @@ const picturesApiService = new PicturesApiService();
 function onFormSubmit(event) {
   event.preventDefault();
   markupCleaning();
-  //checking of empty string submitting
-  if (inputOptions().inputEl.value.length === 0) {
+  console.log();
+  //checking of empty string submitting and double space matching
+  if (
+    inputOptions().inputEl.value.length === 0 ||
+    inputOptions().inputEl.value.search(/  {1,3}/) !== -1
+  ) {
+    //Input cleaning
+    event.currentTarget.elements.searchQuery.value = '';
+    //Notifiying user
     return Notiflix.Notify.info(
       'Sorry, there are no images matching your search query.'
     );
   } else {
     picturesApiService.inputData =
-      event.currentTarget.elements.searchQuery.value;
+      event.currentTarget.elements.searchQuery.value.trim();
     picturesApiService.resetPage();
     picturesApiService
       .fetchPictures()
