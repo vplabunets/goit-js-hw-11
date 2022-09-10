@@ -13,19 +13,19 @@ const refs = {
   // galleryDivEl: document.querySelector('.gallery'),
   // loadMoreBtn: document.querySelector('.load-more'),
 };
-let lightBox = null;
+const lightBox = new SimpleLightbox('.gallery a', {
+  //Adding additional options
+  captionsData: 'alt',
+  captionPosition: 'bottom',
+  captionDelay: 250,
+});
 let totalPages = 0;
 inputOptions().formEl.addEventListener('submit', onFormSubmit);
 inputOptions().loadMoreBtn.addEventListener('click', onLoadMore);
 //
-function lightBoxLauncher() {
-  return (lightBox = new SimpleLightbox('.gallery a', {
-    //Adding additional options
-    captionsData: 'alt',
-    captionPosition: 'bottom',
-    captionDelay: 250,
-  }).refresh());
-}
+// function lightBoxLauncher() {
+//   return lightBox;
+// }
 
 const picturesApiService = new PicturesApiService();
 async function onFormSubmit(event) {
@@ -90,7 +90,7 @@ function markupCleaning() {
 
 function renderGallery(userInputArray) {
   markupCreation(userInputArray);
-  lightBoxLauncher();
+  lightBox.refresh();
 }
 
 function markupCreation(userInputArray) {
@@ -136,11 +136,3 @@ function markupCreation(userInputArray) {
   // console.log(makrup);
   inputOptions().galleryDivEl.insertAdjacentHTML('beforeEnd', makrup);
 }
-
-// document.addEventListener('keydown', function (event) {
-//   // Escape pushing checking
-//   if (event.key === 'Escape') {
-//     // Modal close call
-//     lightBox.close();
-//   }
-// });
