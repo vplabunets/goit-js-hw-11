@@ -35,8 +35,8 @@ async function onFormSubmit(event) {
   //checking of empty string submitting and double space matching
   if (
     // totalPages === 0
-    inputOptions().inputEl.value.length === 0
-    // ||    inputOptions().inputEl.value.search(/  {1,3}/) !== -1
+    inputOptions().inputEl.value.length === 0 ||
+    inputOptions().inputEl.value.search(/  {1,3}/) !== -1
   ) {
     //Input cleaning
     event.currentTarget.elements.searchQuery.value = '';
@@ -72,7 +72,10 @@ async function onFormSubmit(event) {
 
 function onLoadMore() {
   if (totalPages - picturesApiService.page * 40 < 0) {
-    return Notiflix.Notify.info('No more pictures available');
+    inputOptions().loadMoreBtn.style.display = 'none';
+    return Notiflix.Notify.info(
+      "We're sorry, but you've reached the end of search results."
+    );
   } else {
     picturesApiService
       .fetchPictures()
